@@ -3,7 +3,7 @@ const apiRouter = require("./src/routes");
 const app = express();
 const port = 8000;
 
-const productsRouter = require("./src/routes/products");
+
 
 app.use(express.json());
 
