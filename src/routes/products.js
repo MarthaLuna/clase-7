@@ -1,38 +1,121 @@
 const express = require("express");
+const product = require("../../usecases/product")
 
 const router = express.Router();
 
-router.get("/:id", (req, res)=>{
-    const {id }= req.params;
-    res.json({message: `Un producto ${id}`})
+router.get("/:id", async (req, res,next)=>{
+    try{
+
+    const{id}= req.params;
+    const products = await product.getById(id);    
+    res.json({success: true,
+        payload: products});
+    }catch(error)
+    {
+        next(error);
+
+    }
 })
 
-router.get("/", (req,res)=>{
+router.get("/", async (req,res,next)=>{
+    try{
 
-    res.json({message: "Yo soy un producto"})
+        const products = await product.get();
 
-});
-
-router.post("/", (req,res)=>
-{
     
-    const {name, price} = req.body;
-    res.json({message: "Producto creado", payload: {name, price}})
+        res.json({success: true,
+                  payload: products});
+    
+    }catch(error)
+    {
+        next(error);
+
+    }
+   
 });
 
-router.put("/:id", (req,res)=>{
-    const {id} = req.params;
-    const {name, price} = req.body;
+router.post("/", async (req,res,next)=>
+{
+    try{
 
-    res.json({ message: `Producto ${id} actualizado`, payload: {name, price}});
+        const {name, description, price, image} = req.body;
+        const productCreated = await product.create(
+            {name, 
+            description, 
+            price, 
+            image
+        });
+    
+        res.json({
+            success: true,
+            message: "Producto creado", 
+            payload: productCreated,
+        });
+
+    }catch(error)
+    {
+        next(error);
+
+    }
+    
+});
+
+router.put("/:id", async (req,res,next)=>{
+    try{
+
+        const{id}= req.params;
+        const {name, description, price, image} = req.body;
+        const productUpdated = await product.update(
+            id,
+            {name, 
+            description, 
+            price, 
+            image
+        });
+    
+        res.json({
+            success: true,
+            message: "Producto actualizado", 
+            payload: productUpdated,
+        });
+
+    }catch(error)
+    {
+        next(error);
+
+    }
 })
 
-router.delete("/:id", (req,res)=>
-{
-    const {id} = req.params;
-    const {name, price} = req.body;
+router.patch("/:id",  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+  
+      const productUpdated = await product.patch(id, { ...req.body });
+  
+      res.json({
+        success: true,
+        message: `Producto ${id} actualizado`,
+        payload: productUpdated,
+      });
+    } catch (error) {
+      next(error);
+    }
+  });
+  
+  router.delete("/:id",  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+  
+      const productDeleted = await product.del(id);
+  
+      res.json({
+        success: true,
+        message: `Producto ${id} eliminado`,
+        payload: productDeleted,
+      });
+    } catch (error) {
+      next(error);
+    }
+  });
 
-    res.json({ message: `Producto ${id} eliminado`});
-
-});
 module.exports = router;
