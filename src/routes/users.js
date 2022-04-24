@@ -1,38 +1,115 @@
 const express = require("express");
+const user = require("../../usecases/user")
 
 const router = express.Router();
 
-router.get("/:id", (req, res)=>{
-    const {id }= req.params;
-    res.json({message: `Un user ${id}`})
+router.get("/:id", async (req, res,next)=>{
+    try{
+
+    const{id}= req.params;
+    const users = await user.getById(id);    
+    res.json({success: true,
+        payload: users});
+    }catch(error)
+    {
+        next(error);
+
+    }
 })
 
-router.get("/", (req,res)=>{
+router.get("/", async (req,res,next)=>{
+    try{
 
-    res.json({message: "Yo soy un user"})
+        const users = await user.get();
 
-});
-
-router.post("/", (req,res)=>
-{
     
-    const {name} = req.body;
-    res.json({message: "user creado", payload: {name}})
+        res.json({success: true,
+                  payload: users});
+    
+    }catch(error)
+    {
+        next(error);
+
+    }
+   
 });
 
-router.put("/:id", (req,res)=>{
-    const {id} = req.params;
-    const {name, price} = req.body;
+router.post("/", async (req,res,next)=>
+{
+    try{
 
-    res.json({ message: `user ${id} actualizado`, payload: {name}});
+        const {name} = req.body;
+        const userCreated = await user.create(
+            {name
+        });
+    
+        res.json({
+            success: true,
+            message: "User creado", 
+            payload: userCreated,
+        });
+
+    }catch(error)
+    {
+        next(error);
+
+    }
+    
+});
+
+router.put("/:id", async (req,res,next)=>{
+    try{
+
+        const{id}= req.params;
+        const {name} = req.body;
+        const userUpdated = await user.update(
+            id,
+            {name
+        });
+    
+        res.json({
+            success: true,
+            message: "User actualizado", 
+            payload: userUpdated,
+        });
+
+    }catch(error)
+    {
+        next(error);
+
+    }
 })
 
-router.delete("/:id", (req,res)=>
-{
-    const {id} = req.params;
-    const {name, price} = req.body;
+router.patch("/:id",  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+  
+      const userUpdated = await user.patch(id, { ...req.body });
+  
+      res.json({
+        success: true,
+        message: `User ${id} actualizado`,
+        payload: userUpdated,
+      });
+    } catch (error) {
+      next(error);
+    }
+  });
+  
+  router.delete("/:id",  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+  
+      const userDeleted = await user.del(id);
+  
+      res.json({
+        success: true,
+        message: `User ${id} eliminado`,
+        payload: userDeleted,
+      });
+    } catch (error) {
+      next(error);
+    }
+  });
 
-    res.json({ message: `user ${id} eliminado`});
-
-});
 module.exports = router;
