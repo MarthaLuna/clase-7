@@ -1,5 +1,10 @@
 const express = require("express");
-const user = require("../../usecases/user")
+const user = require("../../usecases/user");
+const { authHandler } = require("../middlewares/authHandlers");
+const {
+  adminHandler,
+  staffHandler,
+} = require("../middlewares/permissionHandlers");
 
 const router = express.Router();
 
@@ -17,7 +22,7 @@ router.get("/:id", async (req, res,next)=>{
     }
 })
 
-router.get("/", async (req,res,next)=>{
+router.get("/", authHandler, staffHandler, async (req,res,next)=>{
     try{
 
         const users = await user.get();
@@ -34,13 +39,13 @@ router.get("/", async (req,res,next)=>{
    
 });
 
-router.post("/", async (req,res,next)=>
+router.post("/",  async (req,res,next)=>
 {
     try{
 
-        const {firstname,lastname,email,password} = req.body;
+        const {firstname,lastname,email,password,role} = req.body;
         const userCreated = await user.create(
-            {firstname,lastname,email,password
+            {firstname,lastname,email,password,role
         });
     
         res.json({
@@ -57,7 +62,7 @@ router.post("/", async (req,res,next)=>
     
 });
 
-router.put("/:id", async (req,res,next)=>{
+router.put("/:id", authHandler, adminHandler, async (req,res,next)=>{
     try{
 
         const{id}= req.params;
@@ -80,7 +85,7 @@ router.put("/:id", async (req,res,next)=>{
     }
 })
 
-router.patch("/:id",  async (req, res, next) => {
+router.patch("/:id",  authHandler, adminHandler, async (req, res, next) => {
     try {
       const { id } = req.params;
   
@@ -96,7 +101,7 @@ router.patch("/:id",  async (req, res, next) => {
     }
   });
   
-  router.delete("/:id",  async (req, res, next) => {
+  router.delete("/:id",  authHandler, adminHandler, async (req, res, next) => {
     try {
       const { id } = req.params;
   

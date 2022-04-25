@@ -1,5 +1,10 @@
 const express = require("express");
-const category = require("../../usecases/category")
+const category = require("../../usecases/category");
+const { authHandler } = require("../middlewares/authHandlers");
+const {
+  adminHandler,
+  staffHandler,
+} = require("../middlewares/permissionHandlers");
 
 const router = express.Router();
 
@@ -17,7 +22,7 @@ router.get("/:id", async (req, res,next)=>{
     }
 })
 
-router.get("/", async (req,res,next)=>{
+router.get("/", authHandler, staffHandler, async (req,res,next)=>{
     try{
 
         const categories = await category.get();
@@ -34,7 +39,7 @@ router.get("/", async (req,res,next)=>{
    
 });
 
-router.post("/", async (req,res,next)=>
+router.post("/", authHandler, adminHandler,async (req,res,next)=>
 {
     try{
 
@@ -57,7 +62,7 @@ router.post("/", async (req,res,next)=>
     
 });
 
-router.put("/:id", async (req,res,next)=>{
+router.put("/:id",authHandler, adminHandler, async (req,res,next)=>{
     try{
 
         const{id}= req.params;
@@ -80,7 +85,7 @@ router.put("/:id", async (req,res,next)=>{
     }
 })
 
-router.patch("/:id",  async (req, res, next) => {
+router.patch("/:id",  authHandler, adminHandler, async (req, res, next) => {
     try {
       const { id } = req.params;
   

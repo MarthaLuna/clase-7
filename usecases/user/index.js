@@ -1,5 +1,5 @@
 const User = require("../../models/users").model;
-const encrypt = require("../../src/lib/encrypt")
+const encrypt = require("../../src/lib/encrypt");
 
 
 const get = async () => {
@@ -28,11 +28,11 @@ const authenticate = async(user, password) => {
 //compare password
 const create = async (userData) => {
     
-    const {firstname,lastname,email,password} = userData;
+    const {firstname,lastname,email,password,role} = userData;
 
     const hash = await encrypt.hashPassword(password);
     const newUser = new User({
-        firstname,lastname,email,password:hash });
+        firstname,lastname,email,password:hash,role });
 
     const savedUser = await newUser.save();
     // Logica para guardar en la base de datos
