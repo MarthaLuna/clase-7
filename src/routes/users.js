@@ -38,9 +38,9 @@ router.post("/", async (req,res,next)=>
 {
     try{
 
-        const {name} = req.body;
+        const {firstname,lastname,email,password} = req.body;
         const userCreated = await user.create(
-            {name
+            {firstname,lastname,email,password
         });
     
         res.json({
@@ -61,10 +61,10 @@ router.put("/:id", async (req,res,next)=>{
     try{
 
         const{id}= req.params;
-        const {name} = req.body;
+        const {firstname,lastname,mail,password} = req.body;
         const userUpdated = await user.update(
             id,
-            {name
+            {firstname,lastname,email,password
         });
     
         res.json({

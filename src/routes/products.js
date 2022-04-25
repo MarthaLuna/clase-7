@@ -38,12 +38,13 @@ router.post("/", async (req,res,next)=>
 {
     try{
 
-        const {name, description, price, image} = req.body;
+        const {name, description, price, image, categories} = req.body;
         const productCreated = await product.create(
             {name, 
             description, 
             price, 
-            image
+            image,
+            categories
         });
     
         res.json({

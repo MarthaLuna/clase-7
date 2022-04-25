@@ -8,18 +8,23 @@ const get = async () => {
 }
 
 const getById = async (id) => {
-    return await Product.findById(id).exec();
+    const product =  await Product.findById(id).populate("categories").exec();
     //devuelve un producto
+    return product;
 }
 
 
+
 const create = async (productData) => {
-    const {name, price, description, image} = productData;
+    const {name, price, description, image, categories} = productData;
+
+    
     const newProduct = new Product({
         name, 
         description, 
         price,
-        image });
+        image,
+        categories });
 
     const savedProduct = await newProduct.save();
     // Logica para guardar en la base de datos

@@ -14,9 +14,9 @@ const getById = async (id) => {
 
 
 const create = async (userData) => {
-    const {name} = userData;
+    const {firstname,lastname,email,password} = userData;
     const newUser = new User({
-        name });
+        firstname,lastname,email,password });
 
     const savedUser = await newUser.save();
     // Logica para guardar en la base de datos
@@ -25,11 +25,11 @@ const create = async (userData) => {
 
 const update = async(id, userData) => {
     // actualizar usuario
-    const {name} = userData;
+    const {firstname,lastname,email,password} = userData;
 
     const updatedUser = await User.findByIdAndUpdate(
         id, 
-        {name} ,
+        {firstname,lastname,email,password} ,
         {new: true}
         ).exec();
 
