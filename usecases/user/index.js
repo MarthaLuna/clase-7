@@ -1,4 +1,5 @@
 const User = require("../../models/users").model;
+const encrypt = require("../../src/lib/encrypt")
 
 
 const get = async () => {
@@ -12,11 +13,26 @@ const getById = async (id) => {
     //devuelve un usuario
 }
 
+//getuserbyemail
+const getByEmail = async (email) => {
+    return await User.findOne({email}).exec();
+    
+    
+}
 
+const authenticate = async(user, password) => {
+    hash = user.password;
+    return await encrypt.verifyPassword(password, hash);
+}
+
+//compare password
 const create = async (userData) => {
+    
     const {firstname,lastname,email,password} = userData;
+
+    const hash = await encrypt.hashPassword(password);
     const newUser = new User({
-        firstname,lastname,email,password });
+        firstname,lastname,email,password:hash });
 
     const savedUser = await newUser.save();
     // Logica para guardar en la base de datos
@@ -56,4 +72,6 @@ module.exports = {
     update,
     del,
     patch,
+    getByEmail,
+    authenticate,
 };
